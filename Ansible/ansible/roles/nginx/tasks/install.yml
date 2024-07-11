@@ -1,0 +1,35 @@
+---
+- name: Install the required tools and dependencies
+  ansible.builtin.apt:
+    name: "{{ nginx_dependencies }}"
+    state: latest
+    update_cache: true
+
+- name: Add Nginx signing key
+  ansible.builtin.apt_key:
+    keyring: /usr/share/keyrings/nginx-archive-keyring.gpg
+    url: "{{ nginx_signing_key }}"
+
+- name: Add Nginx repository
+  ansible.builtin.apt_repository:
+    filename: nginx
+    repo: "{{ nginx_repository }}"
+    update_cache: true
+    mode: "0644"
+
+- name: Pin Nginx repository
+  ansible.builtin.blockinfile:
+    path: /etc/apt/preferences.d/99nginx
+    create: true
+    block: |
+      Package: *
+      Pin: origin nginx.org
+      Pin: release o=nginx
+      Pin-Priority: 900
+    mode: "0644"
+
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: latest
+    update_cache: true

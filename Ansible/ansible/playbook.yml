@@ -1,0 +1,7 @@
+---
+- name: Installing and configuring Nginx
+  hosts: linux
+  become: true
+  gather_facts: true
+  roles:
+  - nginx

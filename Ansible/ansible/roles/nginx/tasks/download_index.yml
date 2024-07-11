@@ -1,0 +1,6 @@
+---
+- name: "Download index.html from {{ ansible_host }} to Ansible host"
+  delegate_to: localhost
+  ansible.builtin.get_url:
+    url: "http://{{ ansible_host }}:{{ nginx_port }}/index.html"
+    dest: "{{ ansible_dir }}"

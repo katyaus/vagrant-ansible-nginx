@@ -1,0 +1,40 @@
+---
+- name: Create new directory for index.html on {{ ansible_host }}
+  ansible.builtin.file:
+    path: "{{ nginx_custom_html_dir }}"
+    state: directory
+
+- name: Copy index.html to new directory on {{ ansible_host }}
+  ansible.builtin.copy:
+    src: "{{ nginx_root_dir }}/index.html"
+    dest: "{{ nginx_custom_html_dir }}"
+    remote_src: true
+
+- name: Create new directory for index.html on Ansible host
+  delegate_to: localhost
+  ansible.builtin.file:
+    path: "{{ ansible_dir_html }}"
+    state: directory
+    mode: "0757"
+
+- name: Copy index.html from {{ ansible_host }} to Ansible host
+  ansible.builtin.fetch:
+    src: "{{ nginx_custom_html_dir }}/index.html"
+    dest: "{{ ansible_dir_html }}/"
+    flat: true
+
+- name: Set owner, group and mode for directory on Ansible host
+  delegate_to: localhost
+  ansible.builtin.file:
+    path: "{{ ansible_dir_html }}"
+    owner: "{{ owner_index }}"
+    group: "{{ group_index }}"
+    mode: "0640"
+
+- name: Set owner, group and mode for copied index.html
+  delegate_to: localhost
+  ansible.builtin.file:
+    path: "{{ ansible_dir_html }}/index.html"
+    owner: "{{ owner_index }}"
+    group: "{{ group_index }}"
+    mode: "0640"

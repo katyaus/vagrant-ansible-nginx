@@ -1,0 +1,28 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/ubuntu2204"
+  config.vm.hostname = "ansible"
+  config.vm.box_check_update = false
+  config.vm.network "private_network", ip: "192.168.0.10"
+  config.vm.synced_folder "ansible", "/home/vagrant/ansible", mount_options: ["fmode=600"]
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
+    vb.cpus = "1"
+  end
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt update
+    apt install python3 -y
+    curl -sS https://bootstrap.pypa.io/get-pip.py | python3
+    pip3 install ansible
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    mkdir /etc/ansible
+    cp /home/vagrant/ansible/ansible.cfg /etc/ansible/ansible.cfg
+    chmod 666 /etc/ansible/ansible.cfg
+  SHELL
+end

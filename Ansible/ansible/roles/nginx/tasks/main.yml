@@ -1,0 +1,28 @@
+---
+- name: Main | Install Nginx
+  ansible.builtin.include_tasks:
+    file: install.yml
+
+- name: Main | Start Nginx
+  ansible.builtin.include_tasks:
+    file: start.yml
+
+- name: Main | Timeout on 80 port
+  ansible.builtin.include_tasks:
+    file: timeout.yml
+
+- name: Main | Configure and restart Nginx
+  ansible.builtin.include_tasks:
+    file: config.yml
+
+- name: Main | Create special directory and copy index.html for send to Ansible host
+  ansible.builtin.include_tasks:
+    file: copy_index.yml
+
+- name: Main | Download index.html to Ansible host using URL
+  ansible.builtin.include_tasks:
+    file: download_index.yml
+
+- name: Main | Configure Nginx as reverse proxy
+  ansible.builtin.include_tasks:
+    file: proxy.yml

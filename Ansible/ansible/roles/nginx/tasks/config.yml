@@ -1,0 +1,9 @@
+---
+- name: Configure Nginx
+  ansible.builtin.template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/conf.d/default.conf
+  notify: Restart Nginx
+
+- name: Restart Nginx
+  ansible.builtin.meta: flush_handlers
